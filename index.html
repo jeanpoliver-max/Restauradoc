@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTAURADOC - Conservação e Restauro de Acervos</title>
+    <meta name="description" content="Preservação de acervos, restauração de livros e pastas cartorárias sob medida com mais de 30 anos de excelência.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            50: '#fbfaf7',
+                            100: '#f4f1e8',
+                            200: '#e8e1cf',
+                            300: '#d6c7a6',
+                            400: '#c1a87d',
+                            500: '#ad8b59',
+                            600: '#9a744a',
+                            700: '#805f3f',
+                            800: '#6a4f37',
+                            900: '#5a4331',
+                            950: '#32241a',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'marquee': 'marquee 30s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        body {
+            background-color: #050505;
+            color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom selection color */
+        ::selection {
+            background: rgba(173, 139, 89, 0.3);
+        }
+
+        /* Reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1s ease-out;
+        }
+
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Mobile menu */
+        #mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        #mobile-menu.open {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* Floating WhatsApp bounce */
+        @keyframes bounce-custom {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .animate-bounce-custom {
+            animation: bounce-custom 2s infinite;
+        }
+    </style>
+</head>
+<body class="font-sans">
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-8 bg-transparent">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="font-serif text-2xl font-bold tracking-tighter text-gold-400">RESTAURADOC</span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide uppercase">
+                <a href="#servicos" class="hover:text-gold-400 transition-colors">Serviços</a>
+                <a href="#diferenciais" class="hover:text-gold-400 transition-colors">Diferenciais</a>
+                <a href="#sobre" class="hover:text-gold-400 transition-colors">Sobre</a>
+                <a href="#contato" class="hover:text-gold-400 transition-colors">Contato</a>
+                <a 
+                    href="https://wa.link/cq2woq" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="px-6 py-2 bg-gold-600 hover:bg-gold-500 text-white rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg shadow-gold-900/20"
+                >
+                    Orçamento <i data-lucide="message-circle" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <button class="md:hidden text-white p-2" id="menu-toggle">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-[#050505] p-8 flex flex-col pointer-events-none">
+        <div class="flex justify-end">
+            <button id="menu-close" class="p-2 text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
+        </div>
+        <div class="flex flex-col gap-8 mt-12 text-3xl font-serif">
+            <a href="#servicos" class="mobile-link text-white hover:text-gold-400 transition-colors">Serviços</a>
+            <a href="#diferenciais" class="mobile-link text-white hover:text-gold-400 transition-colors">Diferenciais</a>
+            <a href="#sobre" class="mobile-link text-white hover:text-gold-400 transition-colors">Sobre</a>
+            <a href="#contato" class="mobile-link text-white hover:text-gold-400 transition-colors">Contato</a>
+            <a href="https://wa.link/cq2woq" target="_blank" class="mt-4 px-8 py-4 bg-gold-600 text-white rounded-full text-center text-lg font-sans font-bold">Solicitar Orçamento</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000" 
+                alt="Antique Books" 
+                class="w-full h-full object-cover opacity-40"
+            >
+            <div class="absolute inset-0 bg-gradient-to-b from-[#050505]/80 via-[#050505]/60 to-[#050505]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="reveal active">
+                <span class="inline-block px-4 py-1 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6">
+                    Excelência em Conservação
+                </span>
+                <h1 class="text-6xl md:text-8xl font-serif font-bold leading-[0.9] mb-8 tracking-tighter">
+                    A Imortalidade <br />
+                    <span class="text-gold-400 italic">do seu Acervo.</span>
+                </h1>
+                <p class="text-xl text-white/60 max-w-lg mb-10 font-light leading-relaxed">
+                    Restauração profissional e pastas sob medida com a maestria de quem preserva a história e o patrimônio institucional há mais de 30 anos.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a 
+                        href="https://wa.link/cq2woq" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="px-8 py-4 bg-gold-600 hover:bg-gold-500 text-white rounded-full font-semibold transition-all duration-300 flex items-center gap-3 group shadow-xl shadow-gold-900/30"
+                    >
+                        Solicitar Avaliação <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a 
+                        href="#servicos"
+                        class="px-8 py-4 border border-white/20 hover:bg-white/5 rounded-full font-semibold transition-all duration-300"
+                    >
+                        Conhecer Serviços
+                    </a>
+                </div>
+                
+                <div class="mt-16 flex items-center gap-8 border-t border-white/10 pt-8">
+                    <div>
+                        <div class="text-3xl font-serif font-bold text-gold-400">+30</div>
+                        <div class="text-xs uppercase tracking-widest text-white/40">Anos de História</div>
+                    </div>
+                    <div class="w-px h-10 bg-white/10"></div>
+                    <div>
+                        <div class="text-3xl font-serif font-bold text-gold-400">100%</div>
+                        <div class="text-xs uppercase tracking-widest text-white/40">Artesanal</div>
+                    </div>
+                    <div class="w-px h-10 bg-white/10"></div>
+                    <div>
+                        <div class="text-3xl font-serif font-bold text-gold-400">Brasil</div>
+                        <div class="text-xs uppercase tracking-widest text-white/40">Atendimento Nacional</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative hidden lg:block reveal-scale active">
+                <div class="relative z-10 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-gold-900/20">
+                    <img 
+                        src="https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=1000" 
+                        alt="Restoration Work" 
+                        class="w-full aspect-[4/5] object-cover"
+                    >
+                </div>
+                <div class="absolute -bottom-6 -left-6 glass p-6 rounded-xl z-20 max-w-[200px] animate-float">
+                    <i data-lucide="award" class="text-gold-400 mb-2 w-8 h-8"></i>
+                    <p class="text-sm font-medium">Padrão Institucional de Segurança</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento Grid / Diferenciais -->
+    <section id="diferenciais" class="py-24 bg-[#0a0a0a]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-16 text-center reveal">
+                <h2 class="text-4xl md:text-5xl font-serif font-bold mb-4">Por que a <span class="text-gold-400">RESTAURADOC?</span></h2>
+                <p class="text-white/40 max-w-2xl mx-auto">Combinamos técnicas ancestrais com as necessidades modernas de organização e proteção.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 md:row-span-1 glass rounded-3xl p-8 relative overflow-hidden group reveal">
+                    <div class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                        <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=800" alt="" class="w-full h-full object-cover">
+                    </div>
+                    <div class="relative z-10">
+                        <div class="mb-4 p-3 bg-white/5 rounded-xl inline-block">
+                            <i data-lucide="history" class="text-gold-400 w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Tradição e Maestria</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">Mais de três décadas dedicadas à arte do restauro e conservação.</p>
+                    </div>
+                </div>
+                <div class="md:col-span-1 md:row-span-1 glass rounded-3xl p-8 relative overflow-hidden group reveal">
+                    <div class="relative z-10">
+                        <div class="mb-4 p-3 bg-white/5 rounded-xl inline-block">
+                            <i data-lucide="shield" class="text-gold-400 w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Segurança Total</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">Protocolos rígidos para documentos sigilosos e históricos.</p>
+                    </div>
+                </div>
+                <div class="md:col-span-1 md:row-span-2 glass rounded-3xl p-8 relative overflow-hidden group reveal">
+                    <div class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                        <img src="https://images.unsplash.com/photo-1544640805-3536cd2d2885?auto=format&fit=crop&q=80&w=800" alt="" class="w-full h-full object-cover">
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold mb-2">Acabamento Premium</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">Cada peça é única, produzida com materiais de altíssima durabilidade.</p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 md:row-span-2 glass rounded-3xl p-8 relative overflow-hidden group reveal">
+                    <div class="relative z-10">
+                        <div class="mb-4 p-3 bg-white/5 rounded-xl inline-block">
+                            <i data-lucide="map-pin" class="text-gold-400 w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Atendimento Nacional</h3>
+                        <p class="text-white/50 text-sm leading-relaxed">Logística preparada para atender tribunais e cartórios em todo o Brasil.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicos" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 reveal">
+                <div class="max-w-xl">
+                    <span class="text-gold-400 uppercase tracking-widest text-xs font-bold mb-4 block">Nossas Especialidades</span>
+                    <h2 class="text-4xl md:text-6xl font-serif font-bold leading-tight">Soluções sob medida para o seu <span class="text-gold-400 italic">patrimônio.</span></h2>
+                </div>
+                <p class="text-white/40 max-w-sm mb-2">Preservamos o passado para garantir o futuro da sua instituição.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="group cursor-pointer flex flex-col h-full reveal">
+                    <div class="relative aspect-[16/10] rounded-3xl overflow-hidden mb-8 border border-white/10">
+                        <img src="https://lh3.googleusercontent.com/d/1tBnWU3P5Sdh0hPj6Uy3iUaBZ5YksT4fH" alt="Pastas Cartorárias" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-60"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <div class="flex items-center gap-2 text-gold-400 mb-2">
+                                <i data-lucide="layers" class="w-5 h-5"></i>
+                                <span class="text-xs font-bold uppercase tracking-widest">Produção em Lote</span>
+                            </div>
+                            <h3 class="text-2xl font-serif font-bold">Pastas Cartorárias</h3>
+                        </div>
+                    </div>
+                    <p class="text-white/60 mb-6 text-sm leading-relaxed">Organização, conservação e apresentação profissional para acervos físicos institucionais. Feitas conforme medidas e perfil do cliente.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Proteção por décadas</li>
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Padronização visual</li>
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Acabamento artesanal</li>
+                    </ul>
+                    <a href="https://wa.link/cq2woq" target="_blank" class="w-full py-3 glass rounded-full font-bold hover:bg-gold-600 hover:text-white transition-all duration-300 flex justify-center items-center gap-2 text-sm mt-auto">Orçamento <i data-lucide="message-circle" class="w-4 h-4"></i></a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="group cursor-pointer flex flex-col h-full reveal">
+                    <div class="relative aspect-[16/10] rounded-3xl overflow-hidden mb-8 border border-white/10">
+                        <img src="https://lh3.googleusercontent.com/d/1hxBK3iKfT5-EBgltW_egjvleRuLhSiu7" alt="Restauração Profissional" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-60"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <div class="flex items-center gap-2 text-gold-400 mb-2">
+                                <i data-lucide="book-open" class="w-5 h-5"></i>
+                                <span class="text-xs font-bold uppercase tracking-widest">Alta Complexidade</span>
+                            </div>
+                            <h3 class="text-2xl font-serif font-bold">Restauração Profissional</h3>
+                        </div>
+                    </div>
+                    <p class="text-white/60 mb-6 text-sm leading-relaxed">Preservação e recuperação com segurança máxima para evitar perda definitiva de documentos históricos e livros raros.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Tratamento de mofo</li>
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Recuperação de lombadas</li>
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Atendimento in loco</li>
+                    </ul>
+                    <a href="https://wa.link/cq2woq" target="_blank" class="w-full py-3 glass rounded-full font-bold hover:bg-gold-600 hover:text-white transition-all duration-300 flex justify-center items-center gap-2 text-sm mt-auto">Avaliação <i data-lucide="message-circle" class="w-4 h-4"></i></a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="group cursor-pointer flex flex-col h-full reveal">
+                    <div class="relative aspect-[16/10] rounded-3xl overflow-hidden mb-8 border border-white/10">
+                        <img src="https://i.imgur.com/uyQfBG3.jpeg" alt="Pasta com Plástico" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-60"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <div class="flex items-center gap-2 text-gold-400 mb-2">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                                <span class="text-xs font-bold uppercase tracking-widest">Proteção Extra</span>
+                            </div>
+                            <h3 class="text-2xl font-serif font-bold">Pasta com Plástico</h3>
+                        </div>
+                    </div>
+                    <p class="text-white/60 mb-6 text-sm leading-relaxed">Sistema exclusivo de envelopes plásticos de alta durabilidade para proteção individual de cada folha do seu acervo.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Polietileno extra virgem</li>
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Solda reforçada no fundo</li>
+                        <li class="flex items-center gap-3 text-xs text-white/80"><i data-lucide="check-circle-2" class="text-gold-400 w-4 h-4"></i> Flexibilidade superior</li>
+                    </ul>
+                    <a href="https://wa.link/cq2woq" target="_blank" class="w-full py-3 glass rounded-full font-bold hover:bg-gold-600 hover:text-white transition-all duration-300 flex justify-center items-center gap-2 text-sm mt-auto">Saber Mais <i data-lucide="message-circle" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+
+            <!-- Technical Specs -->
+            <div class="mt-32 pt-20 border-t border-white/5">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-gold-400 uppercase tracking-widest text-xs font-bold mb-4 block">Excelência Técnica</span>
+                    <h2 class="text-3xl md:text-5xl font-serif font-bold">Especificações de <span class="text-gold-400 italic">Alta Performance</span></h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="p-8 glass rounded-2xl border-l-4 border-l-gold-500 reveal">
+                        <h4 class="text-gold-400 font-bold mb-3 text-lg">Estrutura de Alta Densidade</h4>
+                        <p class="text-white/50 text-sm leading-relaxed">As Capas dos livros e das Pastas são confeccionadas em papelão sólido a base de madeira de alta densidade garantindo rigidez e durabilidade inigualáveis.</p>
+                    </div>
+                    <div class="p-8 glass rounded-2xl border-l-4 border-l-gold-500 reveal">
+                        <h4 class="text-gold-400 font-bold mb-3 text-lg">Revestimento em Brim</h4>
+                        <p class="text-white/50 text-sm leading-relaxed">O revestimento das Capas dos Livros e das Pastas em Brim 100% algodão garantido flexibilidade e alta resistência.</p>
+                    </div>
+                    <div class="p-8 glass rounded-2xl border-l-4 border-l-gold-500 reveal">
+                        <h4 class="text-gold-400 font-bold mb-3 text-lg">Aderência e Flexibilidade</h4>
+                        <p class="text-white/50 text-sm leading-relaxed">Utilizamos somente Cola Branca Extra de alta aderência, a qual apresenta uma textura emborrachada garantindo flexibilidade nas áreas dobráveis mesmo ao longo dos anos.</p>
+                    </div>
+                    <div class="p-8 glass rounded-2xl border-l-4 border-l-gold-500 reveal">
+                        <h4 class="text-gold-400 font-bold mb-3 text-lg">Ferragens Anti-Oxidação</h4>
+                        <p class="text-white/50 text-sm leading-relaxed">Parafusos das Pastas fabricados em uma liga especial de bronze e acabamento cromado que não oxida.</p>
+                    </div>
+                    <div class="p-8 glass rounded-2xl border-l-4 border-l-gold-500 reveal">
+                        <h4 class="text-gold-400 font-bold mb-3 text-lg">Acabamento Personalizado</h4>
+                        <p class="text-white/50 text-sm leading-relaxed">Acabamento interno das Capas dos Livros e Pastas em Papel Cartão Couchê com estampa personalizada.</p>
+                    </div>
+                    <div class="p-8 glass rounded-2xl border-l-4 border-l-gold-500 reveal">
+                        <h4 class="text-gold-400 font-bold mb-3 text-lg">Envelopes de Alta Durabilidade</h4>
+                        <p class="text-white/50 text-sm leading-relaxed">Os envelopes plásticos são fabricados 100% em polietileno extra virgem com exclusivo sistema de solda no fundo, garantindo flexibilidade e longevidade.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authority Marquee -->
+    <div class="py-12 bg-gold-600 overflow-hidden whitespace-nowrap">
+        <div class="flex animate-marquee gap-12 items-center">
+            <span class="text-white text-2xl font-serif font-bold italic opacity-80 uppercase tracking-tighter">
+                +30 Anos de Maestria • Padrão Institucional • Atendimento Brasil • Restauro Premium • 
+            </span>
+            <span class="text-white text-2xl font-serif font-bold italic opacity-80 uppercase tracking-tighter">
+                +30 Anos de Maestria • Padrão Institucional • Atendimento Brasil • Restauro Premium • 
+            </span>
+            <span class="text-white text-2xl font-serif font-bold italic opacity-80 uppercase tracking-tighter">
+                +30 Anos de Maestria • Padrão Institucional • Atendimento Brasil • Restauro Premium • 
+            </span>
+        </div>
+    </div>
+
+    <!-- Plastic Folder Section -->
+    <section class="py-24 bg-gold-950/20 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+            <div class="reveal-left">
+                <span class="text-gold-400 uppercase tracking-widest text-xs font-bold mb-4 block">Destaque de Produto</span>
+                <h2 class="text-4xl md:text-5xl font-serif font-bold mb-8 leading-tight">Pasta com <span class="text-gold-400 italic">Plásticos Individuais</span></h2>
+                <p class="text-white/60 text-lg mb-8 leading-relaxed">Desenvolvida para acervos que exigem manuseio constante sem comprometer a integridade do papel. O sistema de envelopes plásticos garante que cada folha esteja protegida contra umidade, poeira e oleosidade das mãos.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 p-4 glass rounded-2xl">
+                        <div class="w-12 h-12 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400">
+                            <i data-lucide="shield" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Polietileno 100% Virgem</h4>
+                            <p class="text-white/40 text-sm">Transparência total e flexibilidade superior.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-4 glass rounded-2xl">
+                        <div class="w-12 h-12 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400">
+                            <i data-lucide="layers" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Solda de Fundo Exclusiva</h4>
+                            <p class="text-white/40 text-sm">Evita que os documentos deslizem ou caiam.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative reveal-scale">
+                <div class="rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-gold-900/10">
+                    <img src="https://i.imgur.com/uyQfBG3.jpeg" alt="Pasta com Plástico Detalhe" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -top-6 -right-6 glass p-6 rounded-2xl animate-float">
+                    <span class="text-gold-400 font-bold block">Alta Durabilidade</span>
+                    <span class="text-white/40 text-xs">Padrão Restauradoc</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-serif font-bold mb-4">Nosso <span class="text-gold-400">Portfólio</span></h2>
+                <p class="text-white/40 max-w-2xl mx-auto">Conheça alguns dos trabalhos realizados para instituições de todo o Brasil.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="group relative overflow-hidden rounded-3xl aspect-square border border-white/10 reveal">
+                    <img src="https://imgur.com/6yBp0X7.jpeg" alt="Pastas Cartorárias" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                        <span class="text-gold-400 text-xs font-bold uppercase tracking-widest mb-2">PASTA COM PLASTICOS</span>
+                        <h4 class="text-xl font-bold">Pastas Cartorárias</h4>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl aspect-square border border-white/10 reveal">
+                    <img src="https://imgur.com/0sVcQiw.jpeg" alt="Restauração Profissional" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                        <span class="text-gold-400 text-xs font-bold uppercase tracking-widest mb-2">Antes e Depois</span>
+                        <h4 class="text-xl font-bold">Restauração Profissional</h4>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl aspect-square border border-white/10 reveal">
+                    <img src="https://i.imgur.com/GeH6CPU.jpeg" alt="PASTAS PARA REGISTRO" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                        <span class="text-gold-400 text-xs font-bold uppercase tracking-widest mb-2">Proteção de Acervos</span>
+                        <h4 class="text-xl font-bold">PASTAS PARA REGISTRO</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="py-24 bg-[#0a0a0a]">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-serif font-bold mb-8 reveal">Inicie a <span class="text-gold-400">preservação</span> do seu acervo hoje.</h2>
+            <p class="text-white/50 mb-16 text-lg max-w-2xl mx-auto reveal">Nossa equipe está pronta para avaliar seu material e propor a melhor solução técnica e estética.</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="flex flex-col items-center gap-6 p-10 glass rounded-3xl reveal">
+                    <div class="p-4 bg-gold-500/10 rounded-2xl text-gold-400"><i data-lucide="message-circle" class="w-8 h-8"></i></div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">WhatsApp Direto</h4>
+                        <p class="text-white/40 text-sm mb-4">Resposta rápida para orçamentos e dúvidas.</p>
+                        <a href="https://wa.link/cq2woq" target="_blank" class="px-8 py-3 bg-gold-600 hover:bg-gold-500 text-white rounded-full font-bold transition-all duration-300 inline-block">Falar com Especialista</a>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-6 p-10 glass rounded-3xl reveal">
+                    <div class="p-4 bg-gold-500/10 rounded-2xl text-gold-400"><i data-lucide="map-pin" class="w-8 h-8"></i></div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Atendimento Brasil</h4>
+                        <p class="text-white/40 text-sm">Enviamos e coletamos materiais em todo o território nacional.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-6 p-10 glass rounded-3xl reveal">
+                    <div class="p-4 bg-gold-500/10 rounded-2xl text-gold-400"><i data-lucide="search" class="w-8 h-8"></i></div>
+                    <div class="w-full">
+                        <h4 class="text-xl font-bold mb-2">E-mail de Contato</h4>
+                        <p class="text-white/40 text-sm mb-6">Envie sua solicitação detalhada por e-mail.</p>
+                        <div class="bg-white/5 py-3 px-4 rounded-xl border border-white/5">
+                            <span class="text-gold-400 font-mono text-sm break-all">restauradoc.orcamento@gmail.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="font-serif text-xl font-bold text-gold-400">RESTAURADOC</div>
+            <div class="text-white/30 text-sm">© 2026 RESTAURADOC. Todos os direitos reservados.</div>
+            <div class="flex gap-6 text-white/40 text-sm">
+                <a href="#" class="hover:text-gold-400">Privacidade</a>
+                <a href="#" class="hover:text-gold-400">Termos</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.link/cq2woq" target="_blank" class="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform duration-300 flex items-center justify-center animate-bounce-custom" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Scroll Effect for Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass', 'py-4');
+                navbar.classList.remove('bg-transparent', 'py-8');
+            } else {
+                navbar.classList.remove('glass', 'py-4');
+                navbar.classList.add('bg-transparent', 'py-8');
+            }
+        });
+
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function openMenu() {
+            mobileMenu.classList.add('open');
+            mobileMenu.classList.remove('pointer-events-none');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            mobileMenu.classList.remove('open');
+            mobileMenu.classList.add('pointer-events-none');
+            document.body.style.overflow = 'auto';
+        }
+
+        menuToggle.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+        // Reveal on Scroll Logic
+        const revealElements = document.querySelectorAll('.reveal, .reveal-scale, .reveal-left');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId.startsWith('#')) {
+                    e.preventDefault();
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
